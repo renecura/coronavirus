@@ -11,7 +11,15 @@ const spread_range = 25;
 const initial_infected = 0.01;
 const mortality = 0.13;
 
-let travel_limit = 50;
+
+let chart;
+
+
+let travel_limit = 0;
+
+
+
+
 
 let day = 0;
 let data = {}
@@ -216,11 +224,19 @@ function spread() {
   return data;
 }
 
+function start() {
+  loop();
+}
+
 
 function setup() {
-
+  noLoop();
   frameRate(60);
   createCanvas(800, 600);
+
+  let button = createButton('Start');
+  button.position(19, 19);
+  button.mousePressed(start);
 
   for (let i = 0; i < max_persons; i++)
     persons.push(new Person())
@@ -228,6 +244,9 @@ function setup() {
   for (let i = 0; i < max_persons * initial_infected; i++) {
     persons[i].infected = 1;
   }
+
+  chart = new Chart();
+
 }
 
 let spreadtime = 60;
@@ -252,6 +271,8 @@ function draw() {
     spreadtime = 60;    
     day++;
     console.log("Day:", day, "iCount", data);
+
+    chart.addData(day, data);
 
     if (data.infected <= 0) noLoop();
   }
