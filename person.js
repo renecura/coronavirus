@@ -7,43 +7,37 @@ const default_config = {
 
 class Person {
 
-  constructor(width, height, situation, config) {
+  constructor(width, height, config) {
     
     this.config = (!config)? default_config: config;
-    this.situation = situation; 
     
     this.world = {}
     this.world.w = width;
     this.world.h = height;
-    
-    // Set the position of the home
+
     this.home = createVector(
-      random(width),
-      random(height)
+      random(60, width-60),
+      random(60, height-60)
     );
-    this.inhome = true;
-
-    // The initial position is the home
+    
+    // Set the initial position
     this.position = this.home.copy();
-
-    // Set initial wait
-    this.wait = this.config.max_wait - random(this.config.max_wait / 2);
-
+    
     // Set the initial target
-    this.set_target();
-
+    this.target = this.position;
 
     // Determine if the person is infected
-    this.infected = 0;    
-    //this.infect();
+    this.infected = 0;
+
+    this.level = 1;
   }
 
-  infect() {
+  infect(virus) {
     if (this.infected > 0) return;
     if (this.infected < 0) return;
 
     // Determine if the person is infected
-    if (random(1) < this.situation.infected_prob) {
+    if (random(1) < virus.infected_prob) {
       this.infected = 1;
       //console.log("New infected!");
       return;
@@ -65,7 +59,7 @@ class Person {
   }
 
   has_symptoms() {
-    return (this.infected > this.situation.threshold);
+    return (this.infected > 15);
   }
 
   is_healthy() {
@@ -100,27 +94,9 @@ class Person {
     // circle(this.target.x, this.target.y, 10);
   }
 
-  set_target() {
-    this.inhome = !this.inhome; // Pendular trip
-      
-    // New target
-    if (this.inhome) {
-      this.target = createVector(
-        random(this.world.w),
-        random(this.world.h)
-      );
+  
 
-      if (this.situation.travel_limit > 0){
-        let distance = p5.Vector.sub(this.target, this.position);
-        distance.limit(this.situation.travel_limit);
-        this.target = p5.Vector.add(this.position, distance);
-      }
-    } else {
-      this.target = this.home.copy();
-    }
-  }
-
-  next_day(saturated) {
+  next_day(saturated, virus) {
 
     if (this.is_dead()) return;
 
@@ -128,11 +104,11 @@ class Person {
       this.infected++;
     }
 
-    if (this.infected > this.situation.recover) {
+    if (this.infected > virus.recover) {
 
       const r = (saturated)? 0.25: 1;
 
-      if (random(r) > this.situation.mortality) {
+      if (random(r) > virus.mortality) {
         this.infected = -1; // It's cured!
       } else {
         this.infected = -2; // It's dead!
@@ -140,28 +116,53 @@ class Person {
     }
   }
 
-  update() {
+  // Return the points that this person generates.
+  update(state) {
 
-    if (this.is_dead()) return;
+    // If dead or has symptoms not move
+    if (this.is_dead() || this.has_symptoms()) 
+      return 0; // No points
 
-    if (this.wait > 0) {
-      this.wait--;
-      return;
-    }
-
-    if (this.has_symptoms()) return;
-
+    // Animate the movement
     let move = p5.Vector.sub(this.target, this.position);
     move.limit(2);
     this.position.add(move);
 
-    if (p5.Vector.sub(this.position,this.target).magSq() < 10) {
-      // Wait in the zone
-      this.wait = random(this.config.max_wait);
-      this.set_target();
+    // If reach the target, set a new target.
+    if (p5.Vector.sub(this.position,this.target).magSq() < 5) {
+      this.set_target(state);
     }
     
+    // Return points if succesefully move (Maybe others condition later).
+    return state.points; 
   }
+  
+  set_target(state) {
+    
+    // Set a random destination from the home
+    let v = p5.Vector.random2D();
+
+    if (state.travel_limit == 0 || state.level < this.level) {
+      v.setMag(random(300));
+    } else {
+      v.setMag(random(state.travel_limit));
+    }
+    
+
+    this.target = p5.Vector.add(this.home, v);
+    this.target.set(
+      constrain(this.target.x, 0, this.world.w),
+      constrain(this.target.y, 0, this.world.h)
+    );
+
+    // If there are some movement restriction, apply it.
+    // if (state.travel_limit > 0){
+    //   let distance = p5.Vector.sub(this.target, this.position);
+    //   distance.limit(state.travel_limit);
+    //   this.target = p5.Vector.add(this.position, distance);
+    // }
+  }
+
 }
 
 if (typeof module !== "undefined") {

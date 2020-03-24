@@ -33,15 +33,15 @@
   <body> 
     
     <div id="canvas" style="width: 60%; height: 600px; float:left"></div>
-    <div style="width: 40%; height: 400px; margin-left: 800px;">
+    <div style="width: 40%; margin-left: 800px;">
       
-      <button id="start" type="button" class="btn btn-info btn-lg">
+      <button id="start" type="button" class="btn btn-success btn-lg">
         Start
       </button>
 
-      <button id="action" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Take action</button>
+      <button id="action" type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#myModal">Take action</button>
 
-      <div id="chart_div"></div>
+      <div id="chart_div" style="height: 400px;"></div>
     </div>
 
     
@@ -59,32 +59,36 @@
             <p>¿Que medida quieres implementar?</p>
             <p>Cada nivel de medidas es más estricto, lo que ayudará a contener los contagios y aplanar la curva de la pandemia. Pero ten en cuenta que mientras más restrictivos sean, el funcionamiento de tu nación se verá perjudicado y sumarás menos puntos dejando a tus ciudadanos muy vulnerables al pasar la catástrofe.</p>
             <div class="custom-control custom-radio">
-              <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked>
+              <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked
+              value=0>
               <label class="custom-control-label" for="customRadio1">
                 Ninguna
               </label>
             </div>
             <div class="custom-control custom-radio">
-              <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
+              <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input"
+              value=1>
               <label class="custom-control-label" for="customRadio2">
                 Distanciamiento social
               </label>
             </div>
             <div class="custom-control custom-radio">
-              <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
+              <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input"
+              value=2>
               <label class="custom-control-label" for="customRadio3">
                 Cuarentena
               </label>
             </div>
             <div class="custom-control custom-radio">
-              <input type="radio" id="customRadio4" name="customRadio" class="custom-control-input">
+              <input type="radio" id="customRadio4" name="customRadio" class="custom-control-input"
+              value=3>
               <label class="custom-control-label" for="customRadio4">
                 Estado de sitio
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button id="take" type="button" class="btn btn-primary" data-dismiss="modal">Decretar ahora!</button>
+            <button id="take" type="button" class="btn btn-dark" data-dismiss="modal">Decretar ahora!</button>
           </div>
         </div>
         
@@ -96,5 +100,10 @@
     <script src="chart.js"></script>
     <script src="person.js"></script>
     <script src="sketch.js"></script>
+    <script>
+      $('input[type=radio]').click(function() {
+        set_action($(this).val());
+      });
+    </script>
   </body>
 </html>
