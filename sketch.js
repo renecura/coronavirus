@@ -1,7 +1,7 @@
 const max_persons = 500;
 const initial_infected = 0.005;
 const framesInDay = 60;
-const lastDay = 7;
+const lastDay = 100;
 const infectionDay = 5;
 
 // level: indicates if the person still can move.
