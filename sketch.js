@@ -1,14 +1,8 @@
 const max_persons = 500;
 const initial_infected = 0.005;
-const framesInDay = 120;
-
-const virus = {
-  infected_prob: 0.99,
-  threshold: 15, // Number of days when the virus show symptoms
-  recover: 30, // Number of days the person recovers (or die :( )
-  spread_range: 25, // Distance of infection
-  mortality: 0.13, // Mortality percentage  
-}
+const framesInDay = 60;
+const lastDay = 7;
+const infectionDay = 5;
 
 // level: indicates if the person still can move.
 // travel_limit: Distance of travel (0 means no limit)
@@ -38,8 +32,6 @@ states.push({
 let current_state = 0; // Normal state 
 let points = 0;
 
-
-
 let chart;
 
 let day = 0;
@@ -52,54 +44,13 @@ let startButton
 let actionButton
 let takeButton
 
-function spread() {
-
-  let data = {};
-  data.infected = 0;
-  data.has_symptoms = 0;
-  data.recovered = 0;
-  data.dead = 0;
-  data.healthy = 0;
-
-  // Creates the Quadtree
-  let qtree = QuadTree.create();
-  
-  for(let i = 0; i < persons.length; i++){
-
-    const p = persons[i];
-    p.next_day(data.has_symptoms > 100, virus);
-
-    // If p gets sick then it goes to the tree
-    if (p.is_infected()) {
-      let pt = new Point(p.position.x,p.position.y);     
-      qtree.insert(pt);     
-    }
-
-
-    // verify if p gets sick
-    if (!p.is_infected()) {
-      const range = new Circle(p.position.x, p.position.y, 
-        virus.spread_range);
-      let fs = qtree.query(range); 
-
-      if(fs.length > 0) p.infect(virus);     
-    }
-    
-    // Gather data
-    if (p.is_infected()) data.infected++;
-    if (p.has_symptoms()) data.has_symptoms++;
-    if (p.is_cured()) data.recovered++;
-    if (p.is_dead()) data.dead++;
-    if (p.is_healthy()) data.healthy++;
-
-  }
-
-  return data;
-}
 
 function start() {
   loop();
-  startButton.hide();
+  //startButton.hide();
+  
+  $('#startScreen').modal('show');
+
   actionButton.show();
 }
 
@@ -115,9 +66,22 @@ function take() {
   loop();
 }
 
+function showResult() {
+
+  // Some crazy calculation
+  noLoop();
+
+  let p = new Intl.NumberFormat().format(points);
+  console.log(p);
+  
+  select('#finalPoints').innerHTML = p;
+  
+  $('#pointsScreen').modal('show');
+}
+
 function setup() {
   noLoop();
-  frameRate(60);
+  frameRate(30);
 
   const canvas = createCanvas(800, 600);
   canvas.parent("canvas");
@@ -135,42 +99,61 @@ function setup() {
   takeButton.mousePressed(take);
 
 
-
+  // Create people
   for (let i = 0; i < max_persons; i++)
     persons.push(
       new Person(width, height)
       );
+  
 
-  for (let i = 0; i < max_persons * initial_infected; i++) {
-    persons[i].infected = 1;
-  }
 
   chart = new Chart();
 
+  startButton.show();
 }
 
-let spreadtime = framesInDay;
+
+let frameCounter = 0;
 
 function draw() {
   background(220);
 
-  let p = 0;
-  for(let i = 0; i < persons.length; i++){
-    p += persons[i].update(states[current_state]);
-    persons[i].show();
-  }
+  // Move each person and gathered point.
+  let p = persons.reduce( (acc, person) => 
+    acc + person.move(states[current_state])
+  , 0);
   points += p / (persons.length * framesInDay);
 
-  if (spreadtime > 0) {
-    spreadtime--;
-  } else {
-    data = spread();
-    spreadtime = framesInDay;    
-    day++;
-    console.log("Day:", day, "iCount", data, "points", points);
+  // Draw each person
+  persons.forEach(p => p.show());
+  
+  // Advance the frame counter.
+  frameCounter++;
 
+  // Process the pandemia when the day pass
+  if (frameCounter > framesInDay) {
+
+    frameCounter = 0;
+    day++;
+
+    // Spread the virus every frame
+    data = Pandemia.spread(persons);
+    
+    if (day > infectionDay) {
+      persons[0].infected = 1; // Patient 0
+      data.infected++;
+      data.healthy--;
+    }
+
+    // Plot the data
     chart.addData(day, data);
 
-    if (data.infected <= 0) noLoop();
+    console.log("Day:", day, "Data", data, "Points", points);
+
+    // In the last day, stops the simulation and show the final result
+    if (day > lastDay) {
+      showResult();
+    } 
+    
   }
 }

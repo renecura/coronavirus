@@ -117,7 +117,7 @@ class Person {
   }
 
   // Return the points that this person generates.
-  update(state) {
+  move(state) {
 
     // If dead or has symptoms not move
     if (this.is_dead() || this.has_symptoms()) 

@@ -5,8 +5,8 @@ class Chart {
 
   constructor() {
     this.options = {
-      title: 'Coronavirus evolution',
-      hAxis: {title: 'Days',  titleTextStyle: {color: '#333'}},
+      title: 'Evolución del virus',
+      hAxis: {title: 'Día',  titleTextStyle: {color: '#333'}},
       vAxis: {minValue: 0},
       isStacked: 'absolute'
     };
@@ -15,15 +15,15 @@ class Chart {
       document.getElementById('chart_div')
     );
 
-    this.data = [["Day", "Infected", "Healthy", "Deaths"]];
+    this.data = [["Día", "Infectada", "Saludable", "Muertes"]];
    
   }
 
   addData(day, data) {
     this.data.push([
       day,
-      data.infected,
-      data.healthy,
+      data.has_symptoms,
+      data.healthy + data.infected - data.has_symptoms,
       data.dead
     ]);
     this.drawChart();

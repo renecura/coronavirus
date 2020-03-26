@@ -5,13 +5,7 @@
     <!-- Local dev -->
     <!-- <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css"> -->
 
-    <!-- <script src="lib/p5.min.js"></script>
-    <script src="lib/gcharts.js"></script>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/popper.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js"></script> -->
-
-
+    
     <!-- Web deploy -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
@@ -24,9 +18,9 @@
     <div id="canvas" style="width: 60%; height: 600px; float:left"></div>
     <div style="width: 40%; margin-left: 800px;">
       
-      <button id="start" type="button" class="btn btn-success btn-lg">
+      <!-- <button id="start" type="button" class="btn btn-success btn-lg">
         Iniciar
-      </button>
+      </button> -->
 
       <button id="action" type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#myModal">Tomar medidas</button>
 
@@ -36,7 +30,7 @@
     
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal fade" id="myModal" data-backdrop="static" role="dialog">
       <div class="modal-dialog">
       
         <!-- Modal content-->
@@ -85,6 +79,71 @@
     </div>
 
 
+    <!-- Start screen -->
+    <div class="modal fade" id="startScreen" data-backdrop="static"  tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Un nuevo virus</h4>
+          </div>
+          <div class="modal-body">
+            <p>
+              ¡El coronavirus COVID-19 se está expandiendo por el mundo!
+            </p>
+            <p>
+              Aún no ha llegado a tu pequeña nación, pero es inevitable que pronto se presenten casos, por lo que no deberías perder tiempo en tomar medidas.
+            </p>            
+            <p>
+              Solo podrás confirmar los casos que tienen síntomas, pero acordate que el virus tarda 15 días en manifestarse, pero igual se contagia, por esa razón la cantidad de personas infectadas reales sólo vas a poder estimarla.
+            </p>
+            <p>
+              ¡Mucha suerte, tu ciudadanos confían en vos!
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button id="start" type="button" class="btn btn-success" data-dismiss="modal" >¡Comenzar ahora!</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+
+
+    <!-- Points screen -->
+    <div class="modal fade" id="pointsScreen" data-backdrop="static"  tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">¡Se ha terminado!</h4>
+          </div>
+          <div class="modal-body">
+            <p>
+              Has sumado <span id="finalPoints"></span>
+            </p>
+            
+            <p>
+              Refrescá la página para jugar otra vez.
+            </p> 
+          </div>          
+        </div>
+        
+      </div>
+    </div>
+
+
+
+    <!-- <script src="lib/p5.min.js"></script>
+    <script src="lib/gcharts.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/popper.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script> -->
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -92,16 +151,21 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-
-
-    <script src="quadtree.js"></script>
-    <script src="chart.js"></script>
-    <script src="person.js"></script>
-    <script src="sketch.js"></script>
+    
     <script>
       $('input[type=radio]').click(function() {
         set_action($(this).val());
       });
+
+      $('#startScreen').modal('show');
+      $('#startButton').hide();
     </script>
+
+    <script src="quadtree.js"></script>
+    <script src="chart.js"></script>
+    <script src="person.js"></script>
+    <script src="pandemia.js"></script>
+    <script src="sketch.js"></script>
+
   </body>
 </html>
