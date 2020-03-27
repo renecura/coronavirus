@@ -1,8 +1,9 @@
 const max_persons = 500;
-const initial_infected = 0.005;
 const framesInDay = 60;
 const lastDay = 100;
-const infectionDay = 5;
+const infectionDay = 4;
+
+const formater = new Intl.NumberFormat().format
 
 // level: indicates if the person still can move.
 // travel_limit: Distance of travel (0 means no limit)
@@ -71,12 +72,9 @@ function showResult() {
   // Some crazy calculation
   noLoop();
 
-  let p = new Intl.NumberFormat().format(points);
-  console.log(p);
-  
-  select('#finalPoints').innerHTML = p;
-  
   $('#pointsScreen').modal('show');
+  $("#ppoints").text(formater(points));
+  
 }
 
 function setup() {
@@ -112,9 +110,18 @@ function setup() {
   startButton.show();
 }
 
+function showAlert(msg){
+
+  $("#alert").html(msg);
+  $("#alert").fadeIn();
+
+  window.setTimeout(() => $('#alert').fadeOut(), 4000);
+}
+
+
 
 let frameCounter = 0;
-
+let alerts = []
 function draw() {
   background(220);
 
@@ -130,25 +137,69 @@ function draw() {
   // Advance the frame counter.
   frameCounter++;
 
+  // Spread the virus every X frames
+  if(frameCounter % 10 == 0)
+    Pandemia.spread(persons);
+
+   
+
   // Process the pandemia when the day pass
   if (frameCounter > framesInDay) {
 
     frameCounter = 0;
     day++;
 
-    // Spread the virus every frame
-    data = Pandemia.spread(persons);
+    $("#daycounter").text(''+day);
+    $("#points").text(formater(points));
+
+    data = Pandemia.next_day(persons);
     
-    if (day > infectionDay) {
+    if (day == infectionDay) {
       persons[0].infected = 1; // Patient 0
       data.infected++;
       data.healthy--;
+      showAlert("¡Personas de zonas en riesgo han ingresado a tu nación!");
+    }
+
+    if (data.infected > 50 && !alerts[1]) {
+      showAlert("¡Muchas personas han tenido contacto con personas de riesgo!");
+      alerts[1] = true;
+    }
+
+    if (data.has_symptoms > 0 && !alerts[2]) {
+      showAlert("¡Se ha detectado la primer persona infectada!");
+      alerts[2] = true;
+    }
+
+    if (data.has_symptoms > 250 && !alerts[3]) {
+      showAlert("La mitad de la población presenta sintomas, quizás ya sea tarde para actuar...");
+      alerts[3] = true;
+    }
+
+    if (data.deads > 100 && !alerts[4]) {
+      showAlert("Hemos perdido un 20% de la pobalción. Es una catástrofe");
+      alerts[4] = true;
+    }
+
+    if (data.recovered > 0 && !alerts[5]) {
+      showAlert("¡Hemos registrado el primer paciente recuperado!");
+      alerts[5] = true;
+    }
+
+    if (day > 89 && !alerts[6]) {
+      showAlert("Resistí, solo faltan 10 días más");
+      alerts[6] = true;
+    }
+
+    if (day > 15 && data.infected == 0 && data.has_symptoms == 0 && !alerts[7]) {
+      showAlert("¡Lo lograste, erradicaste el virus!");
+      alerts[7] = true;
     }
 
     // Plot the data
     chart.addData(day, data);
 
-    console.log("Day:", day, "Data", data, "Points", points);
+    console.log("Day:", day, "Data", data, "Points", formater(points));
 
     // In the last day, stops the simulation and show the final result
     if (day > lastDay) {

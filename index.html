@@ -22,9 +22,16 @@
         Iniciar
       </button> -->
 
+      <p>Día: <span id='daycounter'>0</span></p>
+      <p>Puntos: <span id='points'>0</span></p>
+
       <button id="action" type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#myModal">Tomar medidas</button>
 
       <div id="chart_div" style="height: 400px;"></div>
+
+      <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert" style="display:none;">
+        ¡Personas de zonas en riesgo han ingresado a tu nación!
+      </div>
     </div>
 
     
@@ -96,7 +103,7 @@
               Aún no ha llegado a tu pequeña nación, pero es inevitable que pronto se presenten casos, por lo que no deberías perder tiempo en tomar medidas.
             </p>            
             <p>
-              Solo podrás confirmar los casos que tienen síntomas, pero acordate que el virus tarda 15 días en manifestarse, pero igual se contagia, por esa razón la cantidad de personas infectadas reales sólo vas a poder estimarla.
+              Solo podrás confirmar los casos que tienen síntomas, pero acordate que el virus tarda 10 días en manifestarse, pero igual se contagia, por esa razón la cantidad de personas infectadas reales sólo vas a poder estimarla.
             </p>
             <p>
               ¡Mucha suerte, tu ciudadanos confían en vos!
@@ -123,7 +130,7 @@
           </div>
           <div class="modal-body">
             <p>
-              Has sumado <span id="finalPoints"></span>
+              Has sumado <span id="ppoints"></span>
             </p>
             
             <p>
@@ -159,6 +166,9 @@
 
       $('#startScreen').modal('show');
       $('#startButton').hide();
+
+      
+
     </script>
 
     <script src="quadtree.js"></script>

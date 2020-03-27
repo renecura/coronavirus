@@ -8,6 +8,7 @@ class Chart {
       title: 'Evolución del virus',
       hAxis: {title: 'Día',  titleTextStyle: {color: '#333'}},
       vAxis: {minValue: 0},
+      colors: ['#FF0000','#008080','#C400C4','#000000'],
       isStacked: 'absolute'
     };
   
@@ -15,7 +16,7 @@ class Chart {
       document.getElementById('chart_div')
     );
 
-    this.data = [["Día", "Infectada", "Saludable", "Muertes"]];
+    this.data = [["Día", "Infectada", "Saludable", "Recuperada", "Muertes"]];
    
   }
 
@@ -23,7 +24,8 @@ class Chart {
     this.data.push([
       day,
       data.has_symptoms,
-      data.healthy + data.infected - data.has_symptoms,
+      data.healthy + data.infected - data.has_symptoms - data.recovered,
+      data.recovered,
       data.dead
     ]);
     this.drawChart();

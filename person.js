@@ -59,7 +59,7 @@ class Person {
   }
 
   has_symptoms() {
-    return (this.infected > 15);
+    return (this.infected > 10);
   }
 
   is_healthy() {
@@ -73,8 +73,8 @@ class Person {
       fill(0);
     } else if (this.has_symptoms()) {
       fill(200,0,0);
-    } else if (this.is_infected()) {
-      fill(128,69,0);
+    // } else if (this.is_infected()) {
+      // fill(128,69,0);
     } else if (this.is_cured()) {
       fill(196,0,196);
     } else {
